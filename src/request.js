@@ -1,4 +1,5 @@
 import { BREAK_LINE } from './utils/constants.js'
+import { Headers } from './headers.js'
 
 class HttpRequestParams {
   params = {}
@@ -31,7 +32,6 @@ export class HttpRequest {
       this.method = this.parseMethod(chunk)
       this.pathname = this.parsePath(chunk)
       this.protocol = 'HTTP/1.1' //
-      this.params = {} //
       this.headers = this.parseHeaders(chunk)
       this.body = this.parseBody(chunk)
     }

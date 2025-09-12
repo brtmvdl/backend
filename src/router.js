@@ -7,8 +7,9 @@ export class Router {
 
   constructor() {
     this.request('OPTIONS', '*', (req, res) => {
-      res.setHeader('Access-Control-Allow-Origin', req.getHeader('Access-Control-Allow-Origin', '*'))
-      res.setHeader('Access-Control-Allow-Header', req.getHeader('Access-Control-Allow-Header', '*'))
+      res.setHeader('Access-Control-Allow-Origin', req.getHeader('Origin', '*'))
+      res.setHeader('Access-Control-Allow-Headers', req.getHeader('Access-Control-Request-Headers', '*'))
+      res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
       return res
     })
   }
@@ -28,18 +29,21 @@ export class Router {
   }
 
   run(req = new HttpRequest(), res = new HttpResponse()) {
-    const splited_request = req.pathname.split('/')
+    const requestSegments = req.pathname.split('/')
     const cur = this.requests.find((r) => {
       const isMethod = r.method === '*' || r.method === req.method
-      const isPathname = r.pathname.split('/').every((p, ix) => {
-        if (p === splited_request[ix]) return true
-        if (p[0] === ':') return '' != splited_request[ix]
+      const routeSegments = r.pathname.split('/')
+      if (routeSegments.length !== requestSegments.length) return false
+      const isPathname = routeSegments.every((segment, index) => {
+        const value = requestSegments[index]
+        if (segment === value) return true
+        if (segment[0] === ':') return value !== undefined && value !== ''
         return false
       })
 
       if (isMethod && isPathname) {
-        req.pathname.split('/').every((p, ix) => {
-          if (p[0] == ':') req.setParam(p.substring(1), splited_request[ix])
+        routeSegments.forEach((segment, index) => {
+          if (segment[0] === ':') req.setParam(segment.substring(1), requestSegments[index])
         })
       }
 

@@ -9,7 +9,9 @@ export class Headers {
   }
 
   set(key, value = '') {
-    this.headers.push([key, value])
+    const index = this.headers.findIndex(([k]) => k === key)
+    if (index >= 0) this.headers[index] = [key, value]
+    else this.headers.push([key, value])
     return this
   }
 
