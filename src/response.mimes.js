@@ -1,5 +1,5 @@
 
-export default {
+const mimes = {
   'js': 'text/javascript',
   'json': 'application/json',
   'pdf': 'application/pdf',
@@ -17,5 +17,6 @@ export default {
   'png': 'image/png',
   'css': 'text/css',
   'csv': 'text/csv',
-  'xml': 'text/xml',
 }
+
+export default mimes

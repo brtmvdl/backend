@@ -1,7 +1,7 @@
 import { HttpRequest } from '../src/request.js'
 import { ApplicationError } from '../libs/errors/index.js'
 import { BREAK_LINE } from './utils/constants.js'
-import * as mimes from './response.mimes.js'
+import mimes from './response.mimes.js'
 import fs from 'fs'
 
 export class HttpResponse {
@@ -20,7 +20,8 @@ export class HttpResponse {
   }
 
   parseContenType(file = '') {
-    const [_, ext] = file.split('.')
+    const parts = file.split('.')
+    const ext = parts.length > 1 ? parts.pop() : ''
     const mime = mimes[ext]
     if (!mime) return 'text/plain'
     return mime
@@ -116,9 +117,9 @@ export class HttpResponse {
   }
 
   getHeaders() {
-    return Array.from(this.headers).reduce((headers = [], [key, value]) => {
-      headers.push([key, value].join(': '))
-      return headers
+    return this.headers.headers.reduce((lines = [], [key, value]) => {
+      lines.push([key, value].join(': '))
+      return lines
     }, [])
   }
 
